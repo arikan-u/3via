@@ -31,6 +31,7 @@ h1 {
     align-items: center;
     max-width: 80rem;
     margin: 0 auto;
+    padding: 5rem;
 }
 
 .container > * {
@@ -54,11 +55,18 @@ h1 {
     text-align: center;
 }
 
+.flex-end{
+    justify-items: right;
+}
 .hidden {
     display: none;
 }
 
 /*buttons*/
+.nxt-btn {
+padding-top: 3rem;
+}
+
 .btn {
     font-size: 3.5rem;
     padding: 1rem 0;
@@ -83,4 +91,19 @@ h1 {
 cursor: not-allowed;
 box-shadow: none;
 transform: none;
+}
+
+#next-button {
+    text-decoration: none;
+    margin: 0;
+}
+
+.vw-btn {
+    text-decoration: none;
+   
+}
+
+#view-button {
+    font-size: 2rem;
+    font-weight: bolder;
 }

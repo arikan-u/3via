@@ -1,131 +1,149 @@
-const question = document.getElementById("question");
-const options = Array.from(document.getElementsByClassName("option-text"));
+const question = document.getElementById('question');
+const choices = Array.from(document.getElementsByClassName('choice-text'));
+const questionCounterUpdate = document.getElementById('questionCounterUpdate');
+const scoreUpdate = document.getElementById('scoreUpdate')
 
-let currentQuestion = [];
-let answerAccept = true;
+let currentQuestion = {};
+let acceptingAnswers = false;
 let score = 0;
-let liveQuestionCounter = 0;
+let questionCounter = 0;
 let availableQuestions = [];
 
 
-let questions = [
+questions = [
     {
         question: "How many stages are there in start.ng?",
-        option1: 11,
-        option2: 5,
-        option3: 6,
-        option4: 10,
+        choice1: '11',
+        choice2: '5',
+        choice3: '6',
+        choice4: '10',
         answer: 4
     },
 
     {
         question: "How many tracks are there in start.ng?",
-        option1: 1,
-        option2: 2,
-        option3: 3,
-        option4: 4,
+        choice1: '1',
+        choice2: '2',
+        choice3: '3',
+        choice4: '4',
         answer: 4
     },
     
     {
         question: "What colour does yellow and blue make?",
-        option1: "Pink",
-        option2: "Green",
-        option3: "Yellowish Blue",
-        option4: "bluish Yellow",
+        choice1: "Pink",
+        choice2: "Green",
+        choice3: "Yellowish Blue",
+        choice4: "bluish Yellow",
         answer: 2
     },
 
     {
         question: "My name is?",
-        option1: "Arican",
-        option2: "Ari-san",
-        option3: "Arikan",
-        option4: "Aricun",
+        choice1: "Arican",
+        choice2: "Ari-san",
+        choice3: "Arikan",
+        choice4: "Aricun",
         answer: 3
     },
 
     {
-        question: "What eye problem do i suffer from?",
-        option1: "Myopia",
-        option2: "Hypermyopia",
-        option3: "Astigmatism",
-        option4: "Colour Blindness",
+        question: "What eye problem do I suffer from?",
+        choice1: "Myopia",
+        choice2: "Hypermyopia",
+        choice3: "Astigmatism",
+        choice4: "Colour Blindness",
         answer: 1
     },
     
     {
         question: "If wishes were horses beggars would?",
-        option1: "slide",
-        option2: "grind",
-        option3: "side",
-        option4: "ride",
+        choice1: "slide",
+        choice2: "grind",
+        choice3: "side",
+        choice4: "ride",
         answer: 4
     },
 
     {
         question: "Which of these months ends on the 31st?",
-        option1: "July",
-        option2: "September",
-        option3: "June",
-        option4: "November",
-        answer: 1.
+        choice1: "July",
+        choice2: "September",
+        choice3: "June",
+        choice4: "November",
+        answer: 1
     }
 ];
 
-//constants
 
-const correctAnswer = 10;
-const maxQuestion = 5;
+//SCORING
+const maxQuestions = 5;
+const corrBonus = 10;
 
-startGame = () => {
-    liveQuestionCounter = 0;
+gameStart = () => {
+    questionCounter = 0;
     score = 0;
     availableQuestions = [...questions];
-
+    console.log(availableQuestions)
     newQuestion();
 };
 
 
 newQuestion = () => {
-
-    if (availableQuestions.length === 0 || liveQuestionCounter >= maxQuestion){
-        //end page
-
+    if (availableQuestions.length === 0 || questionCounter >= maxQuestions) {
+        localStorage.setItem('yourScore', score);
+        //go to the end page
         return window.location.assign("/end.html");
-    };
+    }
+    questionCounter++;
 
-    liveQuestionCounter++;
+    questionCounterUpdate.innerText = questionCounter + '/' + maxQuestions;
     const questionIndex = Math.floor(Math.random() * availableQuestions.length);
     currentQuestion = availableQuestions[questionIndex];
     question.innerText = currentQuestion.question;
 
-    options.forEach( option => {
-        const number = option.dataset["number"];
-        option.innerText = currentQuestion["option" + number];
+    choices.forEach(choice => {
+        const number = choice.dataset['number'];
+        choice.innerText = currentQuestion['choice' + number];
+
     });
 
     availableQuestions.splice(questionIndex, 1);
-
-    answerAccept = true;
+    acceptingAnswers = true;
 };
 
-options.forEach(option => {
-    option.addEventListener("click", e => {
-        if(!answerAccept)return;
+choices.forEach(choice => {
+    choice.addEventListener('click', e => {
+        if (!acceptingAnswers) return;
 
-        answerAccept = false;
-        const selectedOption = e.target;
-        const selectedAnswer = selectedOption.dataset["number"];
+        acceptingAnswers = false;
+        const selectedChoice = e.target;
+        const selectedAnswer = selectedChoice.dataset['number'];
 
-        const classToApply = selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
-        console.log(classToApply)
+        const classToApply = 
+        selectedAnswer == currentQuestion.answer ? 'correct' : 'incorrect';
 
-       selectedOption.parentElement.classList.add(classToApply)
-       selectedOption.parentElement.classList.remove(classToApply)
+
+        selectedChoice.parentElement.classList.add(classToApply);
+
+        setTimeout(() => {
+            selectedChoice.parentElement.classList.remove(classToApply);
+        }, 1000);
         
-        newQuestion();
+        if (classToApply === 'correct') {
+            addScore(corrBonus);
+        }
+
+        const nextButton = document.getElementById('next-button');
+        nextButton.addEventListener('click', newQuestion, true);
     });
+   
+    addScore = num => {
+        score += num
+        scoreUpdate.innerText = score;
+
+    };
+    
 });
 
-startGame();
+gameStart();
