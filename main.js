@@ -93,7 +93,7 @@ newQuestion = () => {
     if (availableQuestions.length === 0 || questionCounter >= maxQuestions) {
         localStorage.setItem('yourScore', score);
         //go to the end page
-        return window.location.assign("/end.html");
+        return window.location.assign("/3via/end.html");
     }
     questionCounter++;
 
